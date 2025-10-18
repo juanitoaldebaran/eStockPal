@@ -58,3 +58,9 @@ export interface StockProfileCardProps {
     stockPrice: StockPrice;
     stockMetrics?: StockMetrics;
 }
+
+export interface StockProfileCardProps {
+  stockProfile: StockProfile;
+  stockPrice: StockPrice;
+  stockMetrics?: StockMetrics;
+}

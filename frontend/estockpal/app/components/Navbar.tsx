@@ -18,11 +18,6 @@ const navLinks: NavLink[] = [
     },
     {
         key: 2,
-        name: "Product",
-        pathname: "/product",
-    },
-    {
-        key: 3,
         name: "Community",
         pathname: "/community",
     }
@@ -30,14 +25,12 @@ const navLinks: NavLink[] = [
 
 
 export default function Navbar() {
-    const [isMenuOpen, setIsMenuOpen] = useState(true);
     const pathname = usePathname();
 
     return (
         <div className="fixed top-0 z-50 w-full backdrop-blur-md bg-black/90">
             <div className="flex items-center justify-between gap-3 p-4">
                 <Link href={"/"} className="text-white text-xl">eStockPal</Link>
-                {isMenuOpen ? (
                     <div>
                         <ul className="flex items-center gap-4">
                             {navLinks.map((nav) => (
@@ -52,10 +45,6 @@ export default function Navbar() {
                             ))}
                         </ul>
                     </div>
-                ) : (
-                    <div>
-                    </div>
-                )}
             </div>
         </div>
     )
