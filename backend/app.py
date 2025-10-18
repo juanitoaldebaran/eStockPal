@@ -27,18 +27,15 @@ def market_prediction():
         end_date = datetime.now()
         start_date = end_date - timedelta(days=365*2)
 
-        # ✅ Fetch historical data
         df = yf.download(symbol, start=start_date, end=end_date, progress=False)
         if df.empty:
             return jsonify({"error": f"No data found for {symbol}"}), 404
 
         df = df[['Close']].dropna()
 
-        # ✅ Normalize the data
         scaler = MinMaxScaler(feature_range=(0, 1))
         scaled_data = scaler.fit_transform(df.values)
 
-        # ✅ Create sequences
         seq_len = 60
         X, y = [], []
         for i in range(seq_len, len(scaled_data)):
@@ -46,8 +43,7 @@ def market_prediction():
             y.append(scaled_data[i, 0])
         X, y = np.array(X), np.array(y)
         X = np.reshape(X, (X.shape[0], X.shape[1], 1))
-
-        # ✅ Build a small LSTM model
+        
         model = Sequential([
             LSTM(50, return_sequences=True, input_shape=(X.shape[1], 1)),
             LSTM(50, return_sequences=False),
@@ -58,7 +54,6 @@ def market_prediction():
         model.compile(optimizer="adam", loss="mean_squared_error")
         model.fit(X, y, epochs=5, batch_size=32, verbose=0)
 
-        # ✅ Predict next N days
         last_60 = scaled_data[-seq_len:]
         future_predictions = []
         current_batch = last_60.reshape((1, seq_len, 1))
@@ -70,10 +65,8 @@ def market_prediction():
 
         predicted_prices = scaler.inverse_transform(np.array(future_predictions).reshape(-1, 1)).flatten()
 
-        # ✅ Create dates for the predictions
         future_dates = [(end_date + timedelta(days=i + 1)).strftime("%Y-%m-%d") for i in range(days_to_predict)]
 
-        # ✅ Prepare response
         response = {
             "symbol": symbol,
             "predictions": [
